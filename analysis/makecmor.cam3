@@ -1,0 +1,525 @@
+#!/bin/bash
+
+modelname="cam3"
+casename="cam3_1deg_release_amip"
+inputdir="/home/disk/margaret/hillmanb/nobackup/cmip5.cam3/cam3_1deg_release_amip/climo"
+outputdir="/home/disk/margaret/hillmanb/nobackup/masters/cam3.amip.cmor/climo"
+mkdir -p ${outputdir}
+
+function rlut_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > rlut.${modelname}.ncap2.nco <<-"EOF"
+        // data
+        rlut[$time,$lat,$lon] = FLUT;
+        rlut@long_name = "TOA outgoing longwave radiation";
+        rlut@standard_name = "toa_outgoing_longwave_flux";
+        rlut@units = "W m-2";
+        rlut.change_miss(1.e+20f);
+        rlut.set_miss(1.e+20f);
+        rlut@_FillValue    = rlut.get_miss();
+        rlut@missing_value = rlut.get_miss();
+
+        // time
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+
+        // latitude
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+EOF
+    ncap2 -O -v -S rlut.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+
+function rlutcs_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > rlutcs.${modelname}.ncap2.nco <<-"EOF"
+        // data
+        rlutcs[$time,$lat,$lon] = FLUTC;
+        rlutcs@long_name = "TOA outgoing clear-sky longwave radiation";
+        rlutcs@standard_name = "toa_outgoing_longwave_flux_assuming_clear_sky";
+        rlutcs@units = "W m-2";
+        rlutcs.change_miss(1.e+20f);
+        rlutcs.set_miss(1.e+20f);
+        rlutcs@_FillValue    = rlutcs.get_miss();
+        rlutcs@missing_value = rlutcs.get_miss();
+
+        // time
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+
+        // latitude
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+EOF
+    ncap2 -O -v -S rlutcs.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+
+function rsut_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > rsut.${modelname}.ncap2.nco <<-"EOF"
+        // data
+        rsut[$time,$lat,$lon] = SOLIN - FSNT;
+        rsut@long_name = "TOA outgoing shortwave radiation";
+        rsut@standard_name = "toa_outgoing_shortwave_flux";
+        rsut@units = "W m-2";
+        rsut.change_miss(1.e+20f);
+        rsut.set_miss(1.e+20f);
+        rsut@_FillValue    = rsut.get_miss();
+        rsut@missing_value = rsut.get_miss();
+
+        // time
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+
+        // latitude
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+EOF
+    ncap2 -O -v -S rsut.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+
+function rsutcs_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > rsutcs.${modelname}.ncap2.nco <<-"EOF"
+        // data
+        rsutcs[$time,$lat,$lon] = SOLIN - FSNTC;
+        rsutcs@long_name = "TOA outgoing clear-sky shortwave radiation";
+        rsutcs@standard_name = "toa_outgoing_shortwave_flux_assuming_clear_sky";
+        rsutcs@units = "W m-2";
+        rsutcs.change_miss(1.e+20f);
+        rsutcs.set_miss(1.e+20f);
+        rsutcs@_FillValue    = rsutcs.get_miss();
+        rsutcs@missing_value = rsutcs.get_miss();
+
+        // time
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+
+        // latitude
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+EOF
+    ncap2 -O -v -S rsutcs.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+
+function rsdt_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > rsdt.${modelname}.ncap2.nco <<-"EOF"
+        // data
+        rsdt[$time,$lat,$lon] = SOLIN;
+        rsdt@long_name = "TOA incident shortwave radiation";
+        rsdt@standard_name = "toa_incoming_shortwave_flux";
+        rsdt@units = "W m-2";
+        rsdt.change_miss(1.e+20f);
+        rsdt.set_miss(1.e+20f);
+        rsdt@_FillValue    = rsdt.get_miss();
+        rsdt@missing_value = rsdt.get_miss();
+
+        // time
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+
+        // latitude
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+EOF
+    ncap2 -O -v -S rsdt.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+function cl_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > cl.${modelname}.ncap2.nco <<-"EOF"
+        /* data */
+        cl[$time,$lev,$lat,$lon] = CLOUD*100.f;
+        cl@long_name = "Cloud area fraction";
+        cl@standard_name = "cloud_area_fraction_in_atmosphere_layer";
+        cl@units = "%";
+        cl.change_miss(1.e+20f);
+        cl.set_miss(1.e+20f);
+        cl@_FillValue    = cl.get_miss();
+        cl@missing_value = cl.get_miss();
+
+        /* time */
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+        time@bounds = "time_bnds";
+
+        /* latitude */
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+        lat@bounds = "lat_bnds";
+
+        /* longitude */
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+        lon@bounds = "lon_bnds";
+
+        /* time bounds */
+        time_bnds[$time,$bnds] = 0.d;
+        time_bnds(0,0) = time(0) - 1.d;
+        time_bnds(0,1) = time(0) + 1.d;
+
+        /* latitude bounds */
+        *nlat = lat.size();
+        lat_bnds[$lat,$bnds] = 0.d;
+        lat_bnds(0,0) = lat(0) - abs(lat(0) - lat(1))/2.d;
+        lat_bnds(nlat-1,1) = lat(nlat-1) + abs(lat(nlat-1) - lat(nlat-2))/2.d;
+        for(*idx=1; idx<lat.size(); idx++){
+            lat_bnds(idx,0) = (lat(idx-1) + lat(idx))/2.d;
+        }
+        for(*idx=0; idx<lat.size()-1; idx++){
+            lat_bnds(idx,1) = (lat(idx+1) + lat(idx))/2.d;
+        }
+
+        /* longitude bounds */
+        *nlon = lon.size();
+        lon_bnds[$lon,$bnds] = 0.d;
+        lon_bnds(0,0) = lon(0) - abs(lon(0) - lon(1))/2.d;
+        lon_bnds(nlon-1,1) = lon(nlon-1) + abs(lon(nlon-1) - lon(nlon-2))/2.d;
+        for(*idx=1; idx<lon.size(); idx++){
+            lon_bnds(idx,0) = (lon(idx-1) + lon(idx))/2.d;
+        }
+        for(*idx=0; idx<lon.size()-1; idx++){
+            lon_bnds(idx,1) = (lon(idx+1) + lon(idx))/2.d;
+        }
+
+        lev = lev;
+EOF
+    ncap2 -O -v -S cl.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+
+function landfrac_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > landfrac.${modelname}.ncap2.nco <<-"EOF"
+        /* data */
+        landfrac[$time,$lat,$lon] = LANDFRAC;
+        landfrac@long_name = "Fraction of surface covered by land";
+        landfrac@standard_name = "fractional_land_area";
+        landfrac@units = "fraction";
+
+        /* time */
+        defdim("bnds",2);
+        time = time;
+        time@standard_name = "time";
+        time@axis = "T";
+        time@bounds = "time_bnds";
+
+        /* latitude */
+        lat = lat;
+        lat@long_name = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+        lat@bounds = "lat_bnds";
+
+        /* longitude */
+        lon = lon;
+        lon@long_name = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+        lon@bounds = "lon_bnds";
+
+        /* time bounds */
+        time_bnds[$time,$bnds] = 0.d;
+        time_bnds(0,0) = time(0) - 1.d;
+        time_bnds(0,1) = time(0) + 1.d;
+
+        /* latitude bounds */
+        *nlat = lat.size();
+        lat_bnds[$lat,$bnds] = 0.d;
+        lat_bnds(0,0) = lat(0) - abs(lat(0) - lat(1))/2.d;
+        lat_bnds(nlat-1,1) = lat(nlat-1) + abs(lat(nlat-1) - lat(nlat-2))/2.d;
+        for(*idx=1; idx<lat.size(); idx++){
+            lat_bnds(idx,0) = (lat(idx-1) + lat(idx))/2.d;
+        }
+        for(*idx=0; idx<lat.size()-1; idx++){
+            lat_bnds(idx,1) = (lat(idx+1) + lat(idx))/2.d;
+        }
+
+        /* longitude bounds */
+        *nlon = lon.size();
+        lon_bnds[$lon,$bnds] = 0.d;
+        lon_bnds(0,0) = lon(0) - abs(lon(0) - lon(1))/2.d;
+        lon_bnds(nlon-1,1) = lon(nlon-1) + abs(lon(nlon-1) - lon(nlon-2))/2.d;
+        for(*idx=1; idx<lon.size(); idx++){
+            lon_bnds(idx,0) = (lon(idx-1) + lon(idx))/2.d;
+        }
+        for(*idx=0; idx<lon.size()-1; idx++){
+            lon_bnds(idx,1) = (lon(idx+1) + lon(idx))/2.d;
+        }
+EOF
+    ncap2 -O -v -S landfrac.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+
+function clisccp_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > clisccp.${modelname}.ncap2.nco <<-"EOF"
+        // new dimensions
+        *ntau = cosp_tau.size();
+        *nplev = cosp_prs.size();
+        defdim("tau",ntau);
+        defdim("plev",nplev);
+        defdim("bnds",2);
+
+        // optical thickness midpoints
+        tau[$tau] = 0.d;
+        tau(:) = cosp_tau(:);
+        tau@bounds = "tau_bnds";
+        tau@long_name = "cloud optical thickness";
+        tau@standard_name = "atmosphere_optical_thickness_due_to_cloud";
+
+        // cloud top pressure midpoints
+        plev[$plev] = 0.d;
+        plev(:) = cosp_prs(:)*100.d;
+        plev@units = "Pa";
+        plev@bounds = "plev_bnds";
+        plev@long_name = "pressure";
+        plev@standard_name = "air_pressure";
+        plev@axis = "Z";
+
+        // optical thickness bounds
+        tau_bnds[$tau,$bnds] = 0.d;
+        tau_bnds = {
+           0.0,  0.3, 
+           0.3,  1.3, 
+           1.3,  3.6, 
+           3.6,  9.4, 
+           9.4, 23.0, 
+          23.0, 60.0, 
+          60.0,379.0
+        };
+
+        // cloud top pressure bounds
+        plev_bnds[$plev,$bnds] = 0.d;
+        plev_bnds = {
+          110000, 80000, 
+           80000, 68000, 
+           68000, 56000, 
+           56000, 44000, 
+           44000, 31000, 
+           31000, 18000, 
+           18000, 0   
+        };
+          
+        // joint histogram variable
+        clisccp[$time,$plev,$tau,$lat,$lon] = 0.f;
+        clisccp = FISCCP1_COSP.permute($time,$cosp_prs,$cosp_tau,$lat,$lon);
+        clisccp.set_miss(FISCCP1_COSP.get_miss());
+        clisccp@long_name = "ISCCP cloud area fraction";
+        clisccp@standard_name = "isccp_cloud_area_fraction";
+        clisccp@units = "%";
+        clisccp.change_miss(1.e+20f);
+        clisccp.set_miss(1.e+20f);
+        clisccp@_FillValue    = clisccp.get_miss();
+        clisccp@missing_value = clisccp.get_miss();
+
+        // latitude
+        lat = lat;
+        lat@long_name     = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name     = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+
+        // time
+        time = time;
+        time@axis = "T";
+EOF
+    ncap2 -O -v -S clisccp.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+ 
+
+function clMISR_tocmor ()
+{
+    local inputfile=$1
+    local outputfile=$2
+    cat > clMISR.${modelname}.ncap2.nco <<-"EOF"
+        // new dimensions
+        *ncth = cosp_htmisr.size();
+        defdim("tau",8);
+        defdim("cth",ncth);
+        defdim("bnds",2);
+
+        // optical thickness midpoints
+        tau[$tau] = 0.d;
+        tau(:) = {-999.0, 0.15, 0.8, 2.45, 6.5, 16.2, 41.5, 219.5};
+        tau@bounds = "tau_bnds";
+        tau@long_name = "cloud optical thickness";
+        tau@standard_name = "atmosphere_optical_thickness_due_to_cloud";
+
+        // optical thickness bounds
+        tau_bnds[$tau,$bnds] = 0.d;
+        tau_bnds = {
+            -999.0, 0.0,
+           0.0,  0.3, 
+           0.3,  1.3, 
+           1.3,  3.6, 
+           3.6,  9.4, 
+           9.4, 23.0, 
+          23.0, 60.0, 
+          60.0,379.0
+        };
+
+        // cloud top height midpoints
+        cth[$cth] = 0.d;
+        cth(:) = cosp_htmisr(:)*1000.d;
+        cth@units = "m";
+        cth@bounds = "cth_bnds";
+        cth@long_name = "height";
+        cth@standard_name = "height";
+        cth@axis = "Z";
+
+
+        // cloud top height bounds
+        cth_bnds[$cth,$bnds] = 0.d;
+        cth_bnds = {
+            -99.0,     0.0, 
+              0.0,   500.0, 
+            500.0,  1000.0, 
+           1000.0,  1500.0, 
+           1500.0,  2000.0, 
+           2000.0,  2500.0, 
+           2500.0,  3000.0, 
+           3000.0,  4000.0, 
+           4000.0,  5000.0, 
+           5000.0,  7000.0, 
+           7000.0,  9000.0, 
+           9000.0, 11000.0, 
+          11000.0, 13000.0, 
+          13000.0, 15000.0, 
+          15000.0, 17000.0, 
+          17000.0, 23000.0 
+        };
+
+        // joint histogram variable
+        clMISR[$time,$tau,$cth,$lat,$lon] = 0.f;
+        clMISR.set_miss(CLD_MISR.get_miss());
+        clMISR(:,0,:,:,:) = clMISR.get_miss();
+        clMISR(:,1:,:,:,:) = CLD_MISR.permute($time,$cosp_tau,$cosp_htmisr,$lat,$lon);
+        clMISR@long_name = "MISR cloud area fraction";
+        clMISR@standard_name = "misr_cloud_area_fraction";
+        clMISR@units = "%";
+        clMISR.change_miss(1.e+20f);
+        clMISR.set_miss(1.e+20f);
+        clMISR@_FillValue    = clMISR.get_miss();
+        clMISR@missing_value = clMISR.get_miss();
+
+        /* mask land */
+        where (LANDFRAC > 0.1) clMISR = clMISR.get_miss();
+
+        // latitude
+        lat = lat;
+        lat@long_name     = "latitude";
+        lat@standard_name = "latitude";
+        lat@axis = "Y";
+
+        // longitude
+        lon = lon;
+        lon@long_name     = "longitude";
+        lon@standard_name = "longitude";
+        lon@axis = "X";
+
+        time = time;
+        time@axis = "T";
+EOF
+    ncap2 -O -v -S clMISR.${modelname}.ncap2.nco ${inputfile} ${outputfile}
+}
+
+varnames="rlut rlutcs rsut rsutcs rsdt clisccp clMISR"
+for varname in ${varnames}
+do
+    echo -n "${varname}"
+    for season in `seq -w 01 12` DJF JJA ANN
+    do
+        echo -n "..${season}"
+        inputfile="${inputdir}/${casename}_${season}_climo.nc"
+        outputfile="${outputdir}/${modelname}.${varname}.${season}.nc"
+        ${varname}_tocmor ${inputfile} ${outputfile}
+        ncatted -O -a casename,global,o,c,${casename} ${outputfile}
+    done
+    echo "..done."
+done
+
+# move processing scripts
+mkdir -p nco && mv -f *.${modelname}.ncap2.nco nco/
+
+exit 0
